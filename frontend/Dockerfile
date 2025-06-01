@@ -1,7 +1,10 @@
 FROM node:20-alpine AS build
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 WORKDIR /app
 COPY . .
-RUN npm install && npm run build
+RUN pnpm install && pnpm build
 
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
