@@ -1,0 +1,63 @@
+version: "3.9"
+
+services:
+    frontend:
+        build: ./frontend
+        ports:
+            - "8080:80"
+        networks:
+            - library-network
+        depends_on:
+            - backend
+
+    backend:
+        build: ./backend
+        ports:
+            - "3000:3000"
+        environment:
+            - DB_HOST=mariadb
+            - DB_USER=root
+            - DB_PASSWORD=mysecret
+            - DB_NAME=library
+        depends_on:
+            - mariadb
+        networks:
+            - library-network
+
+    mariadb:
+        image: mariadb:11
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: mysecret
+            MYSQL_DATABASE: library
+        volumes:
+            - db-volume:/var/lib/mysql
+        networks:
+            - library-network
+
+    keycloak:
+        image: quay.io/keycloak/keycloak:26.2.5
+        command: start-dev
+        environment:
+            KC_BOOTSTRAP_ADMIN_USERNAME: admin
+            KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+            KC_DB: mariadb
+            KC_DB_URL: jdbc:mariadb://mariadb:3306/keycloak
+            KC_DB_USERNAME: root
+            KC_DB_PASSWORD: mysecret
+        ports:
+            - "8081:8080"
+        depends_on:
+            - mariadb
+        networks:
+            - library-network
+
+networks:
+    library-network: {}
+
+volumes:
+    db-volume:
+        driver_opts:
+            type: tmpfs
+            device: tmpfs
+            o: "size=100m"
