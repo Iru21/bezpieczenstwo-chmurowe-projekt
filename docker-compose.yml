@@ -1,6 +1,19 @@
 name: library
 
 services:
+    frontend-dev:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile.dev
+        ports:
+            - "5173:5173"
+        environment:
+            - CHOKIDAR_USEPOLLING=true
+        networks:
+            - library-network
+        volumes:
+            - ./frontend:/app
+            - /app/node_modules
     frontend:
         build: ./frontend
         ports:
