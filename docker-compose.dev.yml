@@ -1,17 +1,23 @@
 name: library
 
 services:
-    frontend:
-        build: ./frontend
+    frontend-dev:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile.dev
         ports:
-            - "8080:80"
+            - "5173:5173"
+        environment:
+            - CHOKIDAR_USEPOLLING=true
         networks:
             - library-network
-        depends_on:
-            - backend
-
-    backend:
-        build: ./backend
+        volumes:
+            - ./frontend:/app
+            - /app/node_modules
+    backend-dev:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile.dev
         ports:
             - "3000:3000"
         environment:
@@ -23,6 +29,9 @@ services:
             - mariadb
         networks:
             - library-network
+        volumes:
+            - ./backend:/app
+            - /app/node_modules
 
     mariadb:
         image: mariadb:11
