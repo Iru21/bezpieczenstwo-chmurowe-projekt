@@ -1,24 +1,46 @@
-import { ReactKeycloakProvider } from "@react-keycloak/web"
-import Keycloak from "keycloak-js"
-import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { BrowserRouter, Route, Routes, Link } from "react-router-dom"
 import Login from "./Login"
-
-const keycloak = new Keycloak({
-    url: "http://localhost:8081",
-    realm: "master",
-    clientId: "frontend",
-})
+import { useKeycloak } from "@react-keycloak/web"
+import { isAdmin } from "./util"
+import { useEffect } from "react"
 
 export default function App() {
-    return (
+    const { keycloak } = useKeycloak()
+
+    useEffect(() => {
+        document.querySelectorAll("a, button").forEach((el) => {
+            el.addEventListener("click", (e) => {
+                ;(e.target as HTMLElement).blur()
+            })
+        })
+    }, [])
+
+    return keycloak.didInitialize ? (
         <>
-            <ReactKeycloakProvider authClient={keycloak}>
-                <BrowserRouter>
-                    <Routes>
-                        <Route path="/" element={<Login />} />
-                    </Routes>
-                </BrowserRouter>
-            </ReactKeycloakProvider>
+            <BrowserRouter>
+                <header className="flex justify-between items-center py-4 px-8 bg-zinc-800">
+                    <h1 className="text-white text-2xl">Library App</h1>
+                    <nav className="flex space-x-4">
+                        {!keycloak.authenticated ? (
+                            <Link to="/login">Login</Link>
+                        ) : (
+                            <>
+                                <Link to="/">Home</Link>
+                                <Link to="/saved">Saved Books</Link>
+                                {isAdmin(keycloak) && <Link to="/admin">Admin Panel</Link>}
+                            </>
+                        )}
+                    </nav>
+                </header>
+                <Routes>
+                    <Route path="/" element={<></>} />
+                    <Route path="/login" element={<Login />} />
+                </Routes>
+            </BrowserRouter>
         </>
+    ) : (
+        <div className="flex items-center justify-center h-screen">
+            <p className="text-lg text-neutral-400">Loading...</p>
+        </div>
     )
 }

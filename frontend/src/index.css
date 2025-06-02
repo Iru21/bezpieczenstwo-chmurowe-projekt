@@ -1,1 +1,23 @@
 @import "tailwindcss";
+
+body {
+    @apply bg-zinc-900 text-neutral-200 antialiased font-sans;
+}
+
+*,
+::before,
+::after {
+    @apply transition-all duration-200 ease-in-out;
+}
+
+#root {
+    @apply min-h-screen flex flex-col p-4;
+}
+
+a {
+    @apply text-amber-300 hover:text-amber-400 focus:text-amber-600 no-underline;
+}
+
+h1 {
+    @apply uppercase text-2xl font-bold tracking-widest;
+}
