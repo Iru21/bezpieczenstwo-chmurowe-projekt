@@ -1,14 +1,19 @@
 import express from "express"
 import { createServer } from "http"
+import Database from "./db"
 
-const app = express()
-const server = createServer(app)
+;(async () => {
+    await Database.init()
 
-app.get("/", (req, res) => {
-    res.send("Hello, World!")
-})
+    const app = express()
+    const server = createServer(app)
 
-const PORT = 3000
-server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`)
-})
+    app.get("/", (req, res) => {
+        res.send("Hello, World!")
+    })
+
+    const PORT = 3000
+    server.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`)
+    })
+})()
