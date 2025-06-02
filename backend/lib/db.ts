@@ -24,15 +24,52 @@ export default class Database {
         await tempConnection.query(`CREATE DATABASE IF NOT EXISTS \`${database}\`;`)
         await tempConnection.end()
 
-        Database.isInitialized = true
-
         Database.pool = mariadb.createPool({
             ...config,
             database,
             connectionLimit: 5,
         })
 
+        Database.assertTables()
+
+        Database.isInitialized = true
         console.log("Database initialized successfully")
+    }
+
+    private static async assertTables() {
+        const createUsersTable = `
+            CREATE TABLE IF NOT EXISTS users (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(255) NOT NULL UNIQUE,
+                password VARCHAR(255) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `
+
+        const createBooksTable = `
+            CREATE TABLE IF NOT EXISTS books (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                author VARCHAR(255) NOT NULL,
+                published_date DATE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `
+
+        const createFavoritesTable = `
+            CREATE TABLE IF NOT EXISTS favorites (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                book_id INT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
+            );
+        `
+
+        await Database.query(createUsersTable)
+        await Database.query(createBooksTable)
+        await Database.query(createFavoritesTable)
     }
 
     public get instance(): Database {
