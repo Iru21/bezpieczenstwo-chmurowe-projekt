@@ -14,10 +14,25 @@ body {
     @apply min-h-screen flex flex-col p-4;
 }
 
+@layer utilities {
+    .btn-red {
+        @apply text-rose-400 hover:text-rose-500 focus:text-rose-700;
+    }
+
+    .btn-yellow {
+        @apply text-amber-300 hover:text-amber-400 focus:text-amber-600 no-underline;
+    }
+}
+
+button,
 a {
-    @apply text-amber-300 hover:text-amber-400 focus:text-amber-600 no-underline;
+    @apply cursor-pointer;
 }
 
 h1 {
     @apply uppercase text-2xl font-bold tracking-widest;
+}
+
+nav a {
+    @apply btn-yellow;
 }

@@ -28,6 +28,9 @@ export default function App() {
                                 <Link to="/">Home</Link>
                                 <Link to="/saved">Saved Books</Link>
                                 {isAdmin(keycloak) && <Link to="/admin">Admin Panel</Link>}
+                                <button className="btn-red" onClick={() => keycloak.logout({ redirectUri: window.location.origin })}>
+                                    Logout
+                                </button>
                             </>
                         )}
                     </nav>
