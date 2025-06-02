@@ -1,12 +1,9 @@
 FROM node:20-alpine
 ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:./node_modules/.bin:$PATH"
+ENV PATH="$PNPM_HOME:/app/node_modules/.bin:$PATH"
 RUN corepack enable
 
 WORKDIR /app
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
-COPY . .
 
 EXPOSE 3000
 CMD ["nodemon", "lib/index.ts"]

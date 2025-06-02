@@ -31,7 +31,6 @@ services:
             - library-network
         volumes:
             - ./backend:/app
-            - /app/node_modules
 
     mariadb:
         image: mariadb:11
