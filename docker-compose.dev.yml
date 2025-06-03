@@ -13,6 +13,9 @@ services:
             - library-network
         volumes:
             - ./frontend:/app
+        depends_on:
+            mariadb:
+                condition: service_healthy
     backend-dev:
         build:
             context: ./backend
@@ -25,7 +28,8 @@ services:
             - DB_PASSWORD=mysecret
             - DB_NAME=library
         depends_on:
-            - mariadb
+            mariadb:
+                condition: service_healthy
         networks:
             - library-network
         volumes:
@@ -39,8 +43,15 @@ services:
             MYSQL_DATABASE: keycloak
         volumes:
             - ./db-volume:/var/lib/mysql
+            - ./init-scripts/db.sql:/docker-entrypoint-initdb.d/db.sql
         networks:
             - library-network
+        healthcheck:
+            test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -u root -pmysecret"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 15s
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
@@ -52,6 +63,9 @@ services:
             PMA_PASSWORD: mysecret
         networks:
             - library-network
+        depends_on:
+            mariadb:
+                condition: service_healthy
 
     keycloak:
         image: quay.io/keycloak/keycloak:26.2.5
@@ -68,7 +82,8 @@ services:
         ports:
             - "8081:8080"
         depends_on:
-            - mariadb
+            mariadb:
+                condition: service_healthy
         networks:
             - library-network
 

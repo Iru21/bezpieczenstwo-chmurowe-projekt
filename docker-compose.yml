@@ -8,7 +8,8 @@ services:
         networks:
             - library-network
         depends_on:
-            - backend
+            mariadb:
+                condition: service_healthy
 
     backend:
         build: ./backend
@@ -20,9 +21,15 @@ services:
             - DB_PASSWORD=mysecret
             - DB_NAME=library
         depends_on:
-            - mariadb
+            mariadb:
+                condition: service_healthy
         networks:
             - library-network
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
     mariadb:
         image: mariadb:11
@@ -32,8 +39,15 @@ services:
             MYSQL_DATABASE: keycloak
         volumes:
             - ./db-volume:/var/lib/mysql
+            - ./init-scripts/db.sql:/docker-entrypoint-initdb.d/db.sql
         networks:
             - library-network
+        healthcheck:
+            test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -u root -pmysecret"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 15s
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
@@ -45,6 +59,9 @@ services:
             PMA_PASSWORD: mysecret
         networks:
             - library-network
+        depends_on:
+            mariadb:
+                condition: service_healthy
 
     keycloak:
         image: quay.io/keycloak/keycloak:26.2.5
@@ -58,12 +75,19 @@ services:
             KC_DB_URL_HOST: mariadb
             KC_DB_USERNAME: root
             KC_DB_PASSWORD: mysecret
+            KC_HEALTH_ENABLED: true
         ports:
             - "8081:8080"
         depends_on:
-            - mariadb
+            mariadb:
+                condition: service_healthy
         networks:
             - library-network
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8081/health/ready"]
+            interval: 10s
+            timeout: 5s
+            retries: 10
 
 networks:
     library-network: {}
