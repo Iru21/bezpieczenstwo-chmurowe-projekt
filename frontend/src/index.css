@@ -1,27 +1,17 @@
 @import "tailwindcss";
 
-body {
-    @apply bg-zinc-900 text-neutral-200 antialiased font-sans;
-}
-
 *,
 ::before,
 ::after {
     @apply transition-all duration-200 ease-in-out;
 }
 
-#root {
-    @apply min-h-screen flex flex-col p-4;
+body {
+    @apply bg-zinc-900 text-neutral-200 antialiased font-sans;
 }
 
-@layer utilities {
-    .btn-red {
-        @apply text-rose-400 hover:text-rose-500 focus:text-rose-700;
-    }
-
-    .btn-yellow {
-        @apply text-amber-300 hover:text-amber-400 focus:text-amber-600 no-underline;
-    }
+#root {
+    @apply min-h-screen flex flex-col p-4 space-y-10;
 }
 
 button,
@@ -31,6 +21,18 @@ a {
 
 h1 {
     @apply uppercase text-2xl font-bold tracking-widest;
+}
+
+@utility btn {
+    @apply bg-zinc-700 hover:bg-zinc-600 py-2 px-4 inline-flex items-center justify-center font-semibold;
+}
+
+@utility btn-red {
+    @apply text-rose-400 hover:text-rose-500 focus:text-rose-700;
+}
+
+@utility btn-yellow {
+    @apply text-amber-300 hover:text-amber-400 focus:text-amber-600 no-underline;
 }
 
 nav a {

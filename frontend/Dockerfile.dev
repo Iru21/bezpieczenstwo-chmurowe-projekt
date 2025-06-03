@@ -6,6 +6,6 @@ RUN corepack enable
 
 WORKDIR /app
 
-EXPOSE 5173
+EXPOSE 8080
 
 CMD ["pnpm", "dev", "--host"]

@@ -11,14 +11,21 @@
     "license": "ISC",
     "packageManager": "pnpm@10.10.0",
     "devDependencies": {
+        "@types/cors": "^2.8.18",
         "@types/express": "^5.0.2",
+        "@types/express-session": "^1.18.1",
+        "@types/morgan": "^1.9.9",
         "@types/node": "^22.15.29",
         "nodemon": "^3.1.10",
         "ts-node": "^10.9.2",
         "typescript": "^5.8.3"
     },
     "dependencies": {
+        "cors": "^2.8.5",
         "express": "^5.1.0",
-        "mariadb": "^3.4.2"
+        "express-session": "^1.18.1",
+        "keycloak-connect": "^26.1.1",
+        "mariadb": "^3.4.2",
+        "morgan": "^1.10.0"
     }
 }

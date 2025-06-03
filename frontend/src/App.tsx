@@ -3,6 +3,7 @@ import Login from "./Login"
 import { useKeycloak } from "@react-keycloak/web"
 import { isAdmin } from "./util"
 import { useEffect } from "react"
+import Home from "./Home"
 
 export default function App() {
     const { keycloak } = useKeycloak()
@@ -36,7 +37,7 @@ export default function App() {
                     </nav>
                 </header>
                 <Routes>
-                    <Route path="/" element={<></>} />
+                    <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
                 </Routes>
             </BrowserRouter>
