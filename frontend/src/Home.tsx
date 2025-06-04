@@ -1,16 +1,11 @@
-import { useKeycloak } from "@react-keycloak/web"
 import axios from "axios"
+import { useAuthHeaders } from "./hooks"
 
 function Home() {
-    const { keycloak } = useKeycloak()
+    const authHeaders = useAuthHeaders()
 
     const testProtected = async () => {
-        const response = await axios.get("/api/protected", {
-            headers: {
-                Authorization: `Bearer ${keycloak.token}`,
-            },
-        })
-
+        const response = await axios.get("/api/protected", authHeaders)
         console.log("Protected response:", response.data)
     }
 
