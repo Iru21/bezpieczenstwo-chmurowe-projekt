@@ -80,8 +80,7 @@ export const verifyToken = (requiredRoles: string[] = []) => {
                 }
 
                 const payload = decoded as KeycloakTokenPayload
-                const userRoles = payload.realm_access?.roles || []
-
+                const userRoles = payload.resource_access?.["frontend"]?.roles || []
                 const hasRole = requiredRoles.length === 0 || requiredRoles.some((role) => userRoles.includes(role))
 
                 if (!hasRole) {
