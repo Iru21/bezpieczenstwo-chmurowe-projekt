@@ -40,4 +40,20 @@ router.post("/api/books", adminOnly(), (req, res) => {
     res.status(201).json({ message: "Book created successfully" })
 })
 
+router.delete("/api/books/:id", adminOnly(), async (req, res) => {
+    const bookId = parseInt(req.params.id, 10)
+    if (!bookId) {
+        res.status(400).json({ error: "Book ID is required" })
+        return
+    }
+    const books = await BookManager.getAllBooks()
+    const book = books.find((b) => b.id === bookId)
+    if (!book) {
+        res.status(404).json({ error: "Book not found" })
+        return
+    }
+    await BookManager.deleteBook(bookId)
+    res.status(200).json({ message: "Book deleted successfully" })
+})
+
 export default router

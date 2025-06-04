@@ -42,16 +42,33 @@ export default function Admin() {
     function ManageBooksTab() {
         return (
             <>
-                <div className="flex flex-col gap-4">
+                <div className="grid grid-cols-4 gap-4">
                     {books.length === 0 ? (
                         <p className="text-neutral-400">No books available.</p>
                     ) : (
                         books.map((book) => (
-                            <div key={book.id} className="bg-zinc-700 p-4 rounded-lg">
-                                <h3 className="text-xl font-bold text-neutral-200">{book.title}</h3>
-                                <p className="text-neutral-300">Author: {book.author}</p>
+                            <div key={book.id} className="bg-zinc-700 p-4">
+                                <div className="flex ites-center justify-between">
+                                    <h3 className="text-xl font-bold text-neutral-200">{book.title}</h3>
+                                    <button
+                                        className="btn btn-red"
+                                        onClick={async () => {
+                                            const response = await axios.delete(`/api/books/${book.id}`, authHeaders)
+                                            if (response.status === 200) {
+                                                setBooks(books.filter((b) => b.id !== book.id))
+                                            } else {
+                                                alert("Failed to delete book.")
+                                            }
+                                        }}
+                                    >
+                                        x
+                                    </button>
+                                </div>
+                                <p className="text-neutral-300">
+                                    Author: <strong>{book.author}</strong>
+                                </p>
                                 <p className="text-neutral-400">{book.description}</p>
-                                {book.coverImageUrl && <img src={book.coverImageUrl} alt={`${book.title} cover`} className="mt-2 w-full h-auto rounded" />}
+                                {book.coverImageUrl && <img src={book.coverImageUrl} alt={`${book.title} cover`} className="mt-2 w-full h-auto" />}
                             </div>
                         ))
                     )}
@@ -98,19 +115,19 @@ export default function Admin() {
                 <form onSubmit={addBook}>
                     <label>
                         Title
-                        <input type="text" name="title" className="input" placeholder="Book Title" />
+                        <input type="text" name="title" placeholder="Book Title" />
                     </label>
                     <label>
                         Author
-                        <input type="text" name="author" className="input" placeholder="Author Name" />
+                        <input type="text" name="author" placeholder="Author Name" />
                     </label>
                     <label>
                         Description
-                        <textarea name="description" className="input" placeholder="Book Description"></textarea>
+                        <textarea name="description" placeholder="Book Description"></textarea>
                     </label>
                     <label>
                         Cover Image URL
-                        <input type="text" name="coverImageUrl" className="input" placeholder="https://example.com/cover.jpg" />
+                        <input type="text" name="coverImageUrl" placeholder="https://example.com/cover.jpg" />
                     </label>
                     <button type="submit" className="btn btn-yellow mt-4">
                         Add Book

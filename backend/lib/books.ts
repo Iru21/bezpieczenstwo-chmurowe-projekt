@@ -1,7 +1,7 @@
 import Database from "./db"
 
 export class Book {
-    constructor(public id: string, public title: string, public author: string, public description: string, public coverImageUrl: string) {}
+    constructor(public id: number, public title: string, public author: string, public description: string, public coverImageUrl: string) {}
 }
 
 export class BookManager {
@@ -12,5 +12,9 @@ export class BookManager {
 
     public static async createBook(title: string, author: string, description: string, coverImageUrl: string): Promise<void> {
         Database.query("INSERT INTO books (title, author, description, cover_image_url) VALUES (?, ?, ?, ?)", [title, author, description, coverImageUrl])
+    }
+
+    public static async deleteBook(id: number): Promise<void> {
+        Database.query("DELETE FROM books WHERE id = ?", [id])
     }
 }
