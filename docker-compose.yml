@@ -11,6 +11,7 @@ services:
         depends_on:
             mariadb:
                 condition: service_healthy
+        image: iru21/library-frontend:latest
 
     backend:
         container_name: backend
@@ -32,6 +33,7 @@ services:
             interval: 10s
             timeout: 5s
             retries: 5
+        image: iru21/library-backend:latest
 
     mariadb:
         container_name: mariadb
