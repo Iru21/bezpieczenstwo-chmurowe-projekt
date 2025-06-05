@@ -56,4 +56,33 @@ router.delete("/api/books/:id", adminOnly(), async (req, res) => {
     res.status(200).json({ message: "Book deleted successfully" })
 })
 
+router.get("/api/favorited/:id", verifyToken(), async (req: Request, res: Response) => {
+    const userId = req.params.id
+    if (!userId) {
+        res.status(400).json({ error: "User ID is required" })
+        return
+    }
+    const books = (await BookManager.getFavoritedBooks(userId)) || []
+    res.status(200).json(books)
+})
+
+router.post("/api/favorited/:id", verifyToken(), async (req: Request, res: Response) => {
+    const userId = req.params.id
+    const bookId = req.body.bookId
+    if (!userId || !bookId) {
+        res.status(400).json({ error: "User ID and Book ID are required" })
+        return
+    }
+
+    const books = await BookManager.getAllBooks()
+    const book = books.find((b) => b.id === bookId)
+    if (!book) {
+        res.status(404).json({ error: "Book not found" })
+        return
+    }
+
+    await BookManager.favoriteBook(userId, bookId)
+    res.status(200).json(book)
+})
+
 export default router

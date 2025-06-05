@@ -1,25 +1,16 @@
 import { useEffect, useState } from "react"
 import type Book from "./book"
-import { useAuthHeaders } from "./hooks"
 import axios from "axios"
+import { useAuthHeaders } from "./hooks"
 import { useKeycloak } from "@react-keycloak/web"
+import { Link } from "react-router-dom"
 
-function Home() {
-    const [books, setBooks] = useState<Book[]>([])
+function Saved() {
     const [favoritedBooks, setFavoritedBooks] = useState<Book[]>([])
     const authHeaders = useAuthHeaders()
     const { keycloak } = useKeycloak()
 
     useEffect(() => {
-        const loadBooks = async () => {
-            const response = await axios.get("/api/books", authHeaders)
-
-            if (response.status === 200) {
-                setBooks(response.data)
-            } else {
-                console.error("Failed to fetch books:", response.statusText)
-            }
-        }
         const loadFavoritedBooks = async () => {
             if (!keycloak.authenticated) {
                 return
@@ -33,7 +24,7 @@ function Home() {
                 console.error("Failed to fetch favorited books:", response.statusText)
             }
         }
-        Promise.all([loadBooks(), loadFavoritedBooks()])
+        loadFavoritedBooks()
     }, [])
 
     async function favoriteBook(bookId: number) {
@@ -63,10 +54,15 @@ function Home() {
 
     return (
         <div className="grid grid-cols-4 gap-4">
-            {books.length === 0 ? (
-                <p className="text-neutral-400">No books found.</p>
+            {favoritedBooks.length === 0 ? (
+                <p className="text-neutral-400">
+                    No favorited books found.
+                    <Link to="/" className="btn-yellow ml-2">
+                        Go add some!
+                    </Link>
+                </p>
             ) : (
-                books.map((book) => (
+                favoritedBooks.map((book) => (
                     <div key={book.id} className="bg-zinc-700 p-4">
                         <div className="flex items-center justify-between">
                             <h3 className="text-xl font-bold text-neutral-200">{book.title}</h3>
@@ -92,4 +88,4 @@ function Home() {
     )
 }
 
-export default Home
+export default Saved

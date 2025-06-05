@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useEffect, useState, type FormEvent } from "react"
 import { useAuthHeaders, useIsAdmin } from "./hooks"
+import type Book from "./book"
 
 const AdminTab = {
     ManageBooks: "manage-books",
@@ -11,15 +12,7 @@ export default function Admin() {
     const authHeaders = useAuthHeaders()
     const isAdmin = useIsAdmin()
     const [tab, setTab] = useState(AdminTab.ManageBooks)
-    const [books, setBooks] = useState<
-        {
-            id: number
-            title: string
-            description: string
-            author: string
-            coverImageUrl: string
-        }[]
-    >([])
+    const [books, setBooks] = useState<Book[]>([])
 
     useEffect(() => {
         ;(async () => {
@@ -44,7 +37,12 @@ export default function Admin() {
             <>
                 <div className="grid grid-cols-4 gap-4">
                     {books.length === 0 ? (
-                        <p className="text-neutral-400">No books available.</p>
+                        <p className="text-neutral-400">
+                            No books found.
+                            <span className="btn-yellow cursor-pointer ml-2" onClick={() => setTab(AdminTab.AddBook)}>
+                                Add a new book
+                            </span>
+                        </p>
                     ) : (
                         books.map((book) => (
                             <div key={book.id} className="bg-zinc-700 p-4">
@@ -102,7 +100,7 @@ export default function Admin() {
                 authHeaders
             )
 
-            if (response.status === 200) {
+            if (response.status === 201) {
                 alert("Book added successfully!")
                 event.currentTarget.reset()
             } else {
