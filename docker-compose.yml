@@ -28,7 +28,7 @@ services:
         networks:
             - library-network
         healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+            test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:3000/health || exit 1"]
             interval: 10s
             timeout: 5s
             retries: 5
@@ -88,11 +88,6 @@ services:
                 condition: service_healthy
         networks:
             - library-network
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8081/health/ready"]
-            interval: 10s
-            timeout: 5s
-            retries: 10
 
 networks:
     library-network: {}

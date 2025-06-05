@@ -23,7 +23,7 @@ import router from "./router"
     app.use("/", router)
 
     const PORT = 3000
-    server.listen(PORT, () => {
+    server.listen(PORT, "0.0.0.0", () => {
         console.log(`Server is running on http://localhost:${PORT}`)
     })
 })()
