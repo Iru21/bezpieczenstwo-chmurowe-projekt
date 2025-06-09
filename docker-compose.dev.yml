@@ -46,11 +46,13 @@ services:
         container_name: mariadb
         image: mariadb:11
         restart: always
+        ports:
+            - "3306:3306"
         environment:
             MYSQL_ROOT_PASSWORD: mysecret
             MYSQL_DATABASE: keycloak
         volumes:
-            - ./db-volume:/var/lib/mysql
+            - db-volume:/var/lib/mysql
             - ./init-scripts/db.sql:/docker-entrypoint-initdb.d/db.sql
         networks:
             - library-network
@@ -99,3 +101,7 @@ services:
 
 networks:
     library-network: {}
+
+volumes:
+    db-volume:
+        driver: local

@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    annotations:
+        kompose.cmd: kompose convert -o ./k8s/
+        kompose.version: 1.36.0 (HEAD)
+    labels:
+        io.kompose.service: mariadb
+    name: mariadb
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            io.kompose.service: mariadb
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            annotations:
+                kompose.cmd: kompose convert -o ./k8s/
+                kompose.version: 1.36.0 (HEAD)
+            labels:
+                io.kompose.service: mariadb
+        spec:
+            containers:
+                - env:
+                      - name: MYSQL_DATABASE
+                        value: keycloak
+                      - name: MYSQL_ROOT_PASSWORD
+                        value: mysecret
+                  image: mariadb:11
+                  livenessProbe:
+                      exec:
+                          command:
+                              - mariadb-admin
+                              - ping
+                              - -h
+                              - localhost
+                              - -u root
+                              - -pmysecret
+                      failureThreshold: 5
+                      initialDelaySeconds: 15
+                      periodSeconds: 10
+                      timeoutSeconds: 5
+                  name: mariadb
+                  ports:
+                      - containerPort: 3306
+                        protocol: TCP
+                  volumeMounts:
+                      - mountPath: /var/lib/mysql
+                        name: db-volume
+                      - mountPath: /docker-entrypoint-initdb.d/db.sql
+                        name: mariadb-cm1
+                        subPath: db.sql
+            restartPolicy: Always
+            volumes:
+                - name: db-volume
+                  persistentVolumeClaim:
+                      claimName: db-volume
+                - configMap:
+                      items:
+                          - key: db.sql
+                            path: db.sql
+                      name: mariadb-cm1
+                  name: mariadb-cm1
