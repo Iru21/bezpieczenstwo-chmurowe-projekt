@@ -1,2 +1,4 @@
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'mysecret';
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'mysecret';
+ALTER USER 'root'@'%' IDENTIFIED BY 'mysecret';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;

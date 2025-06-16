@@ -36,7 +36,7 @@ spec:
                               - ping
                               - -h
                               - localhost
-                              - -u root
+                              - -uroot
                               - -pmysecret
                       failureThreshold: 5
                       initialDelaySeconds: 15

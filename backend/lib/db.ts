@@ -30,6 +30,10 @@ export default class Database {
             connectionLimit: 5,
         })
 
+        if (!Database.pool) {
+            throw new Error("Failed to create database pool.")
+        }
+
         Database.assertTables()
 
         Database.isInitialized = true

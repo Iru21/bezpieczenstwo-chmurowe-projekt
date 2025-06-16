@@ -1,48 +1,59 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -o ./k8s/
-    kompose.version: 1.36.0 (HEAD)
-  labels:
-    io.kompose.service: keycloak
-  name: keycloak
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      io.kompose.service: keycloak
-  template:
-    metadata:
-      annotations:
+    annotations:
         kompose.cmd: kompose convert -o ./k8s/
         kompose.version: 1.36.0 (HEAD)
-      labels:
+    labels:
         io.kompose.service: keycloak
-    spec:
-      containers:
-        - args:
-            - start-dev
-          env:
-            - name: KC_DB
-              value: mariadb
-            - name: KC_DB_PASSWORD
-              value: mysecret
-            - name: KC_DB_SCHEMA
-              value: keycloak
-            - name: KC_DB_URL_HOST
-              value: mariadb
-            - name: KC_DB_USERNAME
-              value: root
-            - name: KC_HEALTH_ENABLED
-              value: "true"
-            - name: KEYCLOAK_ADMIN
-              value: admin
-            - name: KEYCLOAK_ADMIN_PASSWORD
-              value: admin
-          image: quay.io/keycloak/keycloak:26.2.5
-          name: keycloak
-          ports:
-            - containerPort: 8080
-              protocol: TCP
-      restartPolicy: Always
+    name: keycloak
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            io.kompose.service: keycloak
+    template:
+        metadata:
+            annotations:
+                kompose.cmd: kompose convert -o ./k8s/
+                kompose.version: 1.36.0 (HEAD)
+            labels:
+                io.kompose.service: keycloak
+        spec:
+            initContainers:
+                - command:
+                      - sh
+                      - -c
+                      - |
+                          echo "Waiting for mariadb to be ready..."
+                            until nc -z mariadb 3306; do
+                                sleep 1
+                          done
+                  image: busybox:latest
+                  name: keycloak-wait-for-mariadb
+            containers:
+                - args:
+                      - start-dev
+                  env:
+                      - name: KC_DB
+                        value: mariadb
+                      - name: KC_DB_PASSWORD
+                        value: mysecret
+                      - name: KC_DB_SCHEMA
+                        value: keycloak
+                      - name: KC_DB_URL_HOST
+                        value: mariadb
+                      - name: KC_DB_USERNAME
+                        value: root
+                      - name: KC_HEALTH_ENABLED
+                        value: "true"
+                      - name: KEYCLOAK_ADMIN
+                        value: admin
+                      - name: KEYCLOAK_ADMIN_PASSWORD
+                        value: admin
+                  image: quay.io/keycloak/keycloak:26.2.5
+                  name: keycloak
+                  ports:
+                      - containerPort: 8080
+                        protocol: TCP
+            restartPolicy: Always

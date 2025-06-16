@@ -5,7 +5,7 @@ import { ReactKeycloakProvider } from "@react-keycloak/web"
 import Keycloak from "keycloak-js"
 
 const client = new Keycloak({
-    url: "http://keycloak.192.168.49.2.nip.io",
+    url: "http://keycloak.test",
     realm: "master",
     clientId: "frontend",
 })

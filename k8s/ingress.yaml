@@ -30,7 +30,7 @@ spec:
                             name: phpmyadmin
                             port:
                                 number: 8082
-        - host: keycloak.192.168.49.2.nip.io
+        - host: keycloak.test
           http:
               paths:
                   - path: /

@@ -20,6 +20,17 @@ spec:
             labels:
                 io.kompose.service: backend
         spec:
+            initContainers:
+                - command:
+                      - sh
+                      - -c
+                      - |
+                          echo "Waiting for mariadb to be ready..."
+                            until nc -z mariadb 3306; do
+                                sleep 1
+                          done
+                  image: busybox:latest
+                  name: backend-wait-for-mariadb
             containers:
                 - env:
                       - name: DB_HOST
