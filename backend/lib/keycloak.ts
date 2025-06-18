@@ -3,7 +3,7 @@ import jwt, { JwtHeader, SigningKeyCallback } from "jsonwebtoken"
 import jwksRsa from "jwks-rsa"
 import User from "./user"
 
-const keycloakIssuer = "http://keycloak:8080/realms/master"
+const keycloakIssuer = "http://keycloak:8081/realms/master"
 const clientId = ["master-realm", "frontend"]
 
 const jwksClient = jwksRsa({
@@ -65,12 +65,13 @@ export const verifyToken = (requiredRoles: string[] = []) => {
         }
 
         const token = authHeader.split(" ")[1]
+        // console.log(jwt.decode(token, { complete: true }))
         jwt.verify(
             token,
             getKey,
             {
                 audience: clientId,
-                issuer: "http://localhost:8081/realms/master",
+                issuer: "https://keycloak.test/realms/master",
                 algorithms: ["RS256"],
             },
             (err, decoded) => {

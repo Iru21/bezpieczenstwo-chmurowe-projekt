@@ -33,7 +33,7 @@ spec:
                   name: keycloak-wait-for-mariadb
             containers:
                 - args:
-                      - start-dev
+                      - start
                   env:
                       - name: KC_DB
                         value: mariadb
@@ -47,10 +47,14 @@ spec:
                         value: root
                       - name: KC_HEALTH_ENABLED
                         value: "true"
-                      - name: KEYCLOAK_ADMIN
-                        value: admin
-                      - name: KEYCLOAK_ADMIN_PASSWORD
-                        value: admin
+                      - name: KC_PROXY
+                        value: edge
+                      - name: KC_HTTP_ENABLED
+                        value: "true"
+                      - name: KC_PROXY_HEADERS
+                        value: xforwarded
+                      - name: KC_HOSTNAME
+                        value: keycloak.test
                   image: quay.io/keycloak/keycloak:26.2.5
                   name: keycloak
                   ports:

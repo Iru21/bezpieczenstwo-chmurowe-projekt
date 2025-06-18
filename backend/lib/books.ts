@@ -7,6 +7,9 @@ export class Book {
 export class BookManager {
     public static async getAllBooks(): Promise<Book[]> {
         const rows = await Database.query("SELECT * FROM books")
+        if (!rows || rows.length === 0) {
+            return []
+        }
         return rows.map((row: any) => new Book(row.id, row.title, row.author, row.description, row.cover_image_url))
     }
 

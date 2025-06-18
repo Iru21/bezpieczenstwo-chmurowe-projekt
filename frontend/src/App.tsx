@@ -19,6 +19,8 @@ export default function App() {
         })
 
         setInterval(() => {
+            if (!keycloak.authenticated) return
+
             keycloak
                 .updateToken(60)
                 .then((refreshed) => {

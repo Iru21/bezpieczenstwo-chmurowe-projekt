@@ -10,7 +10,7 @@ import router from "./router"
     const app = express()
     app.use(
         cors({
-            origin: "http://localhost:8080",
+            origin: "*",
             credentials: true,
         })
     )

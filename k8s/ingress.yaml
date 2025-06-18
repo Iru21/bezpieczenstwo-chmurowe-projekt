@@ -3,8 +3,16 @@ kind: Ingress
 metadata:
     name: library-ingress
     annotations:
+        nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/use-regex: "true"
         nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+    tls:
+        - hosts:
+              - library.test
+          secretName: library-keycloak-tls
     rules:
         - host: library.test
           http:
@@ -16,27 +24,24 @@ spec:
                             name: frontend
                             port:
                                 number: 80
-                  - path: /api
+                  - path: /admin
                     pathType: Prefix
                     backend:
                         service:
-                            name: backend
+                            name: frontend
                             port:
-                                number: 3000
-                  - path: /phpmyadmin
+                                number: 80
+                  - path: /saved
                     pathType: Prefix
                     backend:
                         service:
-                            name: phpmyadmin
+                            name: frontend
                             port:
-                                number: 8082
-        - host: keycloak.test
-          http:
-              paths:
-                  - path: /
+                                number: 80
+                  - path: /login
                     pathType: Prefix
                     backend:
                         service:
-                            name: keycloak
+                            name: frontend
                             port:
-                                number: 8081
+                                number: 80
