@@ -27,7 +27,10 @@ spec:
                       - name: MYSQL_DATABASE
                         value: keycloak
                       - name: MYSQL_ROOT_PASSWORD
-                        value: mysecret
+                        valueFrom:
+                            secretKeyRef:
+                                key: mariadb-root-password
+                                name: secret
                   image: mariadb:11
                   livenessProbe:
                       exec:

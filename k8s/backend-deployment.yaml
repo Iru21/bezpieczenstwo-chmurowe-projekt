@@ -38,7 +38,10 @@ spec:
                       - name: DB_NAME
                         value: library
                       - name: DB_PASSWORD
-                        value: mysecret
+                        valueFrom:
+                            secretKeyRef:
+                                key: mariadb-root-password
+                                name: secret
                       - name: DB_USER
                         value: root
                   image: iru21/library-backend:latest

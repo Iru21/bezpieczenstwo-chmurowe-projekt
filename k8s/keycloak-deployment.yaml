@@ -38,7 +38,10 @@ spec:
                       - name: KC_DB
                         value: mariadb
                       - name: KC_DB_PASSWORD
-                        value: mysecret
+                        valueFrom:
+                            secretKeyRef:
+                                key: mariadb-root-password
+                                name: secret
                       - name: KC_DB_SCHEMA
                         value: keycloak
                       - name: KC_DB_URL_HOST
